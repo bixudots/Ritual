@@ -6,7 +6,7 @@ The Ritual ("we", "us", "the app") is a habit tracking app. This policy explains
 
 ## Who we are
 
-The Ritual is operated by **[YOUR LEGAL NAME OR COMPANY]**, based in **[YOUR COUNTRY/STATE]**. If you have questions about this policy, contact us at **[YOUR SUPPORT EMAIL]**.
+The Ritual is operated by **Subash Luitel Sharma**, an independent developer. If you have questions about this policy, contact us at **ctsubaz@gmail.com**.
 
 ## The short version
 
@@ -78,7 +78,7 @@ Depending on where you live, you may also have the right to:
 - Object to or restrict certain processing
 - Lodge a complaint with your local data protection authority
 
-Email **[YOUR SUPPORT EMAIL]** and we'll respond within 30 days.
+Email **ctsubaz@gmail.com** and we'll respond within 30 days.
 
 ## Children
 
@@ -91,7 +91,7 @@ The Ritual is not directed at children under 13 (or the minimum digital-consent 
 - Habit proof photos and time-capsule photos are stored in private buckets; displayed via short-lived signed URLs.
 - If biometric lock is enabled, the app cannot be opened after backgrounding without Face ID / Touch ID.
 
-No system is perfectly secure. If you discover a vulnerability, email **[YOUR SECURITY EMAIL]** and we will acknowledge within 72 hours.
+No system is perfectly secure. If you discover a vulnerability, email **ctsubaz@gmail.com** and we will acknowledge within 72 hours.
 
 ## Changes to this policy
 
@@ -99,6 +99,5 @@ If we change this policy, we'll update the "Last updated" date at the top and, f
 
 ## Contact
 
-**[YOUR LEGAL NAME]**
-**[YOUR POSTAL ADDRESS]**
-**[YOUR SUPPORT EMAIL]**
+**Subash Luitel Sharma**
+**ctsubaz@gmail.com**

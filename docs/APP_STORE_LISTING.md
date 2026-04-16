@@ -9,7 +9,7 @@ _Draft copy for App Store Connect. Tune after beta feedback._
 - **Primary category**: Health & Fitness
 - **Secondary category**: Productivity
 - **Age rating**: 4+
-- **Bundle ID**: `com.yourcompany.ritual`  _(replace before first build)_
+- **Bundle ID**: `com.subitual.app`
 - **SKU**: `ritual-ios-001`
 
 ## Promotional text (170 chars, editable without new build)
@@ -78,9 +78,9 @@ Alternates to A/B test after launch:
 
 ## Support & marketing URLs
 
-- **Support URL**: `https://yourdomain.com/ritual/support` _(set up a mailto: page or a Notion doc at minimum)_
-- **Marketing URL**: `https://yourdomain.com/ritual`
-- **Privacy policy URL**: `https://yourdomain.com/ritual/privacy` _(host `docs/PRIVACY_POLICY.md` publicly)_
+- **Support URL**: `mailto:ctsubaz@gmail.com`
+- **Marketing URL**: `https://bixudots.github.io/Ritual/`
+- **Privacy policy URL**: `https://bixudots.github.io/Ritual/privacy`
 
 ## Screenshots (required sizes)
 

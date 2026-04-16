@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — The Ritual</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #131313; color: #e4e4e7; min-height: 100vh; padding: 40px 20px; }
+    .container { max-width: 640px; margin: 0 auto; }
+    a { color: #FF8C00; }
+    h1 { font-size: 28px; font-weight: 800; color: #FF8C00; margin-bottom: 4px; }
+    .updated { font-size: 14px; color: #71717a; margin-bottom: 32px; font-style: italic; }
+    h2 { font-size: 18px; font-weight: 700; color: #e4e4e7; margin-top: 32px; margin-bottom: 12px; }
+    h3 { font-size: 15px; font-weight: 600; color: #a1a1aa; margin-top: 20px; margin-bottom: 8px; }
+    p, li { font-size: 15px; line-height: 1.7; color: #a1a1aa; margin-bottom: 12px; }
+    ul { padding-left: 20px; margin-bottom: 12px; }
+    li { margin-bottom: 6px; }
+    strong { color: #e4e4e7; }
+    .back { display: inline-block; margin-bottom: 24px; font-size: 14px; }
+    footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #27272a; font-size: 13px; color: #52525b; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="./" class="back">&larr; Back to The Ritual</a>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: April 16, 2026</p>
+
+    <p>The Ritual ("we", "us", "the app") is a habit tracking app. This policy explains what data we collect, why, and how you can control it. We try to collect as little as possible.</p>
+
+    <h2>Who we are</h2>
+    <p>The Ritual is operated by <strong>Subash Luitel Sharma</strong>, an independent developer. If you have questions, contact us at <a href="mailto:ctsubaz@gmail.com">ctsubaz@gmail.com</a>.</p>
+
+    <h2>The short version</h2>
+    <ul>
+      <li>We store your account, habits, completions, XP, streaks, badges, and time capsules on Supabase so they sync between your devices.</li>
+      <li>We don't sell your data. We don't run ads. We don't use third-party analytics.</li>
+      <li>Camera and location access are only used when you explicitly add photo or location proof to a habit.</li>
+      <li>You can export or delete all of your data from the app, at any time.</li>
+    </ul>
+
+    <h2>What we collect and why</h2>
+
+    <h3>Account data</h3>
+    <ul>
+      <li><strong>Email address and password</strong> — to sign you in. Authentication is handled by Supabase Auth; we never see your raw password.</li>
+      <li><strong>Display name</strong> (optional) — shown in your own profile.</li>
+    </ul>
+
+    <h3>Habit data</h3>
+    <ul>
+      <li><strong>Habits you create</strong> (name, icon, schedule, XP value, target location if you set one)</li>
+      <li><strong>Daily completion logs</strong> — which habits you completed on which day</li>
+      <li><strong>XP events and streak history</strong> — to power the dashboard</li>
+      <li><strong>Badges you earn</strong></li>
+      <li><strong>Time capsules you write</strong> (title, message, optional photos, delivery date)</li>
+    </ul>
+    <p>All of the above is stored in your own private, row-level-secured record on Supabase. Other users cannot read it.</p>
+
+    <h3>Device data</h3>
+    <ul>
+      <li><strong>Photos you attach as habit proof or to a time capsule</strong> — uploaded to a private Supabase Storage bucket scoped to your user folder. Signed URLs expire after one hour.</li>
+      <li><strong>Location coordinates</strong> — only sampled when you complete a habit that has a location requirement. We store only the lat/lng of the check-in.</li>
+      <li><strong>Face ID / Touch ID / biometric</strong> — handled entirely by your device's secure enclave. We never receive biometric data.</li>
+    </ul>
+
+    <h3>What we do NOT collect</h3>
+    <ul>
+      <li>No advertising identifiers</li>
+      <li>No contact book / address book</li>
+      <li>No browsing history</li>
+      <li>No microphone access</li>
+      <li>No health/fitness data beyond the habits you type in yourself</li>
+      <li>No third-party analytics SDKs</li>
+      <li>No crash reporters with PII</li>
+    </ul>
+
+    <h2>How your data is used</h2>
+    <ul>
+      <li>To operate the app — sync your habits, calculate XP, show your dashboard, deliver your time capsules on their unlock date.</li>
+      <li>To authenticate you when you sign in.</li>
+      <li>To let you recover your account via Supabase's password reset flow.</li>
+    </ul>
+    <p>We do not use your data for advertising, for profiling, or for training machine-learning models.</p>
+
+    <h2>Sharing</h2>
+    <p>We do not sell or rent your personal data to anyone. We share data only with:</p>
+    <ul>
+      <li><strong>Supabase</strong> — our database, auth, and storage provider.</li>
+      <li><strong>Apple App Store / Google Play</strong> — for app distribution and crash reporting you opt into at the OS level.</li>
+      <li><strong>Law enforcement</strong> — only if required by a valid legal request.</li>
+    </ul>
+
+    <h2>Your rights and controls</h2>
+    <p>Inside the app, you can at any time:</p>
+    <ul>
+      <li><strong>Edit or delete</strong> individual habits, logs, and time capsules from their detail screens</li>
+      <li><strong>Reset all app data</strong> from Profile &rarr; Advanced &rarr; Reset data (keeps your account)</li>
+      <li><strong>Delete your account</strong> from Profile &rarr; Advanced &rarr; Delete account (wipes all data immediately)</li>
+    </ul>
+    <p>Email <a href="mailto:ctsubaz@gmail.com">ctsubaz@gmail.com</a> and we'll respond within 30 days.</p>
+
+    <h2>Children</h2>
+    <p>The Ritual is not directed at children under 13. We do not knowingly collect data from them. If you believe a child has created an account, email us and we will delete it.</p>
+
+    <h2>Security</h2>
+    <ul>
+      <li>All traffic is encrypted via HTTPS/TLS.</li>
+      <li>Row Level Security on every table restricts reads/writes to the owning user.</li>
+      <li>Photos are stored in private buckets with short-lived signed URLs.</li>
+      <li>Biometric lock prevents access after backgrounding without Face ID / Touch ID.</li>
+    </ul>
+    <p>If you discover a vulnerability, email <a href="mailto:ctsubaz@gmail.com">ctsubaz@gmail.com</a> and we will acknowledge within 72 hours.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>If we change this policy, we'll update the "Last updated" date and, for material changes, show an in-app notice.</p>
+
+    <footer>
+      <p><strong>Subash Luitel Sharma</strong><br>
+      <a href="mailto:ctsubaz@gmail.com">ctsubaz@gmail.com</a></p>
+    </footer>
+  </div>
+</body>
+</html>
