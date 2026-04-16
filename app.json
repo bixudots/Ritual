@@ -81,6 +81,13 @@
         {
           "faceIDPermission": "Allow $(PRODUCT_NAME) to unlock the app with Face ID."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#FF8C00"
+        }
       ]
     ],
     "runtimeVersion": {

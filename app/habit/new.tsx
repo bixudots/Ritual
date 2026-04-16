@@ -21,6 +21,7 @@ import { getCurrentLocation, type LocationProofResult } from '../../src/lib/proo
 import { supabase } from '../../src/lib/supabase';
 import XPGainedScreen from '../../src/components/XPGainedScreen';
 import type { ScheduleType, ProofType } from '../../src/types/habit';
+import { scheduleHabitReminder, requestNotificationPermission } from '../../src/lib/notifications';
 
 const EMOJI_OPTIONS = [
   '🎯', '🏋️', '🏃', '🚴', '🧘', '💪',
@@ -71,6 +72,11 @@ export default function NewHabitScreen() {
   const [locationLng, setLocationLng] = useState<number | null>(null);
   const [locationRadius, setLocationRadius] = useState(250);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+
+  // Reminder
+  const [reminderEnabled, setReminderEnabled] = useState(false);
+  const [reminderHour, setReminderHour] = useState(9);
+  const [reminderMinute, setReminderMinute] = useState(0);
 
   // XP screen state
   const [showXPScreen, setShowXPScreen] = useState(false);
@@ -134,11 +140,21 @@ export default function NewHabitScreen() {
       trackingEnabled,
       trackingUnit: trackingEnabled && trackingUnit.trim() ? trackingUnit.trim() : undefined,
       trackingGoal: trackingEnabled && parsedGoal !== undefined && !isNaN(parsedGoal) ? parsedGoal : undefined,
+      reminderTime: reminderEnabled ? `${String(reminderHour).padStart(2, '0')}:${String(reminderMinute).padStart(2, '0')}` : null,
     });
 
     setIsSaving(false);
 
     if (result) {
+      // Schedule notification if reminder is set
+      if (reminderEnabled) {
+        const granted = await requestNotificationPermission();
+        if (granted) {
+          const days = scheduleType === 'specific_days' ? selectedDays : undefined;
+          const timeStr = `${String(reminderHour).padStart(2, '0')}:${String(reminderMinute).padStart(2, '0')}`;
+          await scheduleHabitReminder(result.habit.id, name.trim(), emoji, timeStr, days);
+        }
+      }
       // Calculate badges earned
       const badges: BadgeDefinition[] = [];
       let bonusXP = 0;
@@ -479,6 +495,53 @@ export default function NewHabitScreen() {
           </View>
         )}
 
+        {/* Reminder */}
+        <Text style={styles.sectionLabel}>REMIND ME</Text>
+        <View style={styles.toggleCard}>
+          <View style={styles.toggleLeft}>
+            <View style={[styles.toggleIconBg, { backgroundColor: 'rgba(255,140,0,0.12)' }]}>
+              <Ionicons name="notifications-outline" size={16} color={Colors.primaryContainer} />
+            </View>
+            <View style={styles.toggleInfo}>
+              <Text style={styles.toggleTitle}>Daily reminder</Text>
+              <Text style={styles.toggleDescription}>Get nudged if you haven't done it yet</Text>
+            </View>
+          </View>
+          <Pressable
+            style={[styles.toggle, reminderEnabled && styles.toggleOn]}
+            onPress={() => setReminderEnabled(!reminderEnabled)}
+          >
+            <View style={[styles.toggleKnob, reminderEnabled && styles.toggleKnobOn]} />
+          </Pressable>
+        </View>
+
+        {reminderEnabled && (
+          <View style={styles.reminderTimeRow}>
+            <Text style={styles.reminderTimeLabel}>REMIND AT</Text>
+            <View style={styles.reminderTimePicker}>
+              <Pressable
+                style={styles.reminderTimeBtn}
+                onPress={() => setReminderHour(h => (h + 1) % 24)}
+                onLongPress={() => setReminderHour(h => (h - 1 + 24) % 24)}
+              >
+                <Text style={styles.reminderTimeDigit}>{String(reminderHour).padStart(2, '0')}</Text>
+              </Pressable>
+              <Text style={styles.reminderTimeColon}>:</Text>
+              <Pressable
+                style={styles.reminderTimeBtn}
+                onPress={() => setReminderMinute(m => (m + 15) % 60)}
+                onLongPress={() => setReminderMinute(m => (m - 15 + 60) % 60)}
+              >
+                <Text style={styles.reminderTimeDigit}>{String(reminderMinute).padStart(2, '0')}</Text>
+              </Pressable>
+              <Text style={styles.reminderTimeAmPm}>
+                {reminderHour < 12 ? 'AM' : 'PM'}
+              </Text>
+            </View>
+            <Text style={styles.reminderTimeHint}>Tap to change · hold to go back</Text>
+          </View>
+        )}
+
         <View style={{ height: 120 }} />
       </ScrollView>
 
@@ -744,5 +807,44 @@ const styles = StyleSheet.create({
   saveButtonDisabled: { opacity: 0.5 },
   saveButtonText: {
     fontSize: FontSizes.lg, color: Colors.onPrimaryContainer, fontFamily: Fonts.headlineExtraBold,
+  },
+
+  // Reminder
+  reminderTimeRow: {
+    backgroundColor: 'rgba(255,140,0,0.05)',
+    borderRadius: BorderRadius.md,
+    padding: Spacing.lg,
+    marginTop: Spacing.md,
+    borderWidth: 1,
+    borderColor: 'rgba(255,140,0,0.15)',
+    alignItems: 'center',
+  },
+  reminderTimeLabel: {
+    fontSize: FontSizes.xs, fontFamily: Fonts.bodySemiBold, color: Colors.primaryContainer,
+    letterSpacing: 2, marginBottom: Spacing.md,
+  },
+  reminderTimePicker: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.xs,
+  },
+  reminderTimeBtn: {
+    backgroundColor: Colors.surfaceContainerHigh,
+    borderRadius: BorderRadius.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+    minWidth: 64,
+    alignItems: 'center',
+  },
+  reminderTimeDigit: {
+    fontSize: FontSizes['2xl'], fontFamily: Fonts.headlineExtraBold, color: Colors.onSurface,
+  },
+  reminderTimeColon: {
+    fontSize: FontSizes['2xl'], fontFamily: Fonts.headlineExtraBold, color: Colors.zinc500,
+  },
+  reminderTimeAmPm: {
+    fontSize: FontSizes.md, fontFamily: Fonts.headlineBold, color: Colors.primaryContainer,
+    marginLeft: Spacing.sm,
+  },
+  reminderTimeHint: {
+    fontSize: FontSizes.xs, fontFamily: Fonts.body, color: Colors.zinc600, marginTop: Spacing.sm,
   },
 });

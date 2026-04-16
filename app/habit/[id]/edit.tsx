@@ -18,6 +18,7 @@ import { XP_VALUES, type XPValue } from '../../../src/constants/xp';
 import { useHabitStore } from '../../../src/stores/habit-store';
 import { getCurrentLocation } from '../../../src/lib/proof-service';
 import type { ScheduleType, ProofType } from '../../../src/types/habit';
+import { scheduleHabitReminder, cancelHabitReminder, requestNotificationPermission } from '../../../src/lib/notifications';
 
 const EMOJI_OPTIONS = [
   '🎯', '🏋️', '🏃', '🚴', '🧘', '💪',
@@ -70,6 +71,9 @@ export default function EditHabitScreen() {
   const [trackingEnabled, setTrackingEnabled] = useState(false);
   const [trackingUnit, setTrackingUnit] = useState('');
   const [trackingGoal, setTrackingGoal] = useState('');
+  const [reminderEnabled, setReminderEnabled] = useState(false);
+  const [reminderHour, setReminderHour] = useState(9);
+  const [reminderMinute, setReminderMinute] = useState(0);
 
   useEffect(() => {
     if (!habit) return;
@@ -86,6 +90,14 @@ export default function EditHabitScreen() {
     setTrackingEnabled(habit.trackingEnabled ?? false);
     setTrackingUnit(habit.trackingUnit ?? '');
     setTrackingGoal(habit.trackingGoal != null ? String(habit.trackingGoal) : '');
+    if (habit.reminderTime) {
+      setReminderEnabled(true);
+      const [h, m] = habit.reminderTime.split(':').map(Number);
+      setReminderHour(h);
+      setReminderMinute(m);
+    } else {
+      setReminderEnabled(false);
+    }
   }, [habit]);
 
   if (!habit) {
@@ -118,7 +130,7 @@ export default function EditHabitScreen() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim()) return;
     const schedule =
       scheduleType === 'every_day'
@@ -129,6 +141,10 @@ export default function EditHabitScreen() {
     if (photoProof && locationProof) proofRequired = 'photo_or_location';
     else if (photoProof) proofRequired = 'photo';
     else if (locationProof) proofRequired = 'location';
+
+    const timeStr = reminderEnabled
+      ? `${String(reminderHour).padStart(2, '0')}:${String(reminderMinute).padStart(2, '0')}`
+      : null;
 
     const parsedGoal = trackingGoal.trim() ? Number(trackingGoal) : undefined;
     updateHabit(id, {
@@ -143,7 +159,20 @@ export default function EditHabitScreen() {
       trackingEnabled,
       trackingUnit: trackingEnabled && trackingUnit.trim() ? trackingUnit.trim() : undefined,
       trackingGoal: trackingEnabled && parsedGoal !== undefined && !isNaN(parsedGoal) ? parsedGoal : undefined,
+      reminderTime: timeStr,
     });
+
+    // Schedule or cancel notification
+    if (reminderEnabled && timeStr) {
+      const granted = await requestNotificationPermission();
+      if (granted) {
+        const days = scheduleType === 'specific_days' ? selectedDays : undefined;
+        await scheduleHabitReminder(id, name.trim(), emoji, timeStr, days);
+      }
+    } else {
+      await cancelHabitReminder(id);
+    }
+
     router.back();
   };
 
@@ -439,6 +468,53 @@ export default function EditHabitScreen() {
           </View>
         )}
 
+        {/* Reminder */}
+        <Text style={styles.sectionLabel}>REMIND ME</Text>
+        <View style={styles.toggleCard}>
+          <View style={styles.toggleLeft}>
+            <View style={[styles.toggleIconBg, { backgroundColor: 'rgba(255,140,0,0.12)' }]}>
+              <Ionicons name="notifications-outline" size={16} color={Colors.primaryContainer} />
+            </View>
+            <View style={styles.toggleInfo}>
+              <Text style={styles.toggleTitle}>Daily reminder</Text>
+              <Text style={styles.toggleDescription}>Get nudged if you haven't done it yet</Text>
+            </View>
+          </View>
+          <Pressable
+            style={[styles.toggle, reminderEnabled && styles.toggleOn]}
+            onPress={() => setReminderEnabled(!reminderEnabled)}
+          >
+            <View style={[styles.toggleKnob, reminderEnabled && styles.toggleKnobOn]} />
+          </Pressable>
+        </View>
+
+        {reminderEnabled && (
+          <View style={styles.reminderTimeRow}>
+            <Text style={styles.reminderTimeLabel}>REMIND AT</Text>
+            <View style={styles.reminderTimePicker}>
+              <Pressable
+                style={styles.reminderTimeBtn}
+                onPress={() => setReminderHour(h => (h + 1) % 24)}
+                onLongPress={() => setReminderHour(h => (h - 1 + 24) % 24)}
+              >
+                <Text style={styles.reminderTimeDigit}>{String(reminderHour).padStart(2, '0')}</Text>
+              </Pressable>
+              <Text style={styles.reminderTimeColon}>:</Text>
+              <Pressable
+                style={styles.reminderTimeBtn}
+                onPress={() => setReminderMinute(m => (m + 15) % 60)}
+                onLongPress={() => setReminderMinute(m => (m - 15 + 60) % 60)}
+              >
+                <Text style={styles.reminderTimeDigit}>{String(reminderMinute).padStart(2, '0')}</Text>
+              </Pressable>
+              <Text style={styles.reminderTimeAmPm}>
+                {reminderHour < 12 ? 'AM' : 'PM'}
+              </Text>
+            </View>
+            <Text style={styles.reminderTimeHint}>Tap to change · hold to go back</Text>
+          </View>
+        )}
+
         <View style={{ height: 120 }} />
       </ScrollView>
 
@@ -635,5 +711,44 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.md,
     color: Colors.onSurface,
     fontFamily: Fonts.bodySemiBold,
+  },
+
+  // Reminder
+  reminderTimeRow: {
+    backgroundColor: 'rgba(255,140,0,0.05)',
+    borderRadius: BorderRadius.md,
+    padding: Spacing.lg,
+    marginTop: Spacing.md,
+    borderWidth: 1,
+    borderColor: 'rgba(255,140,0,0.15)',
+    alignItems: 'center' as const,
+  },
+  reminderTimeLabel: {
+    fontSize: FontSizes.xs, fontFamily: Fonts.bodySemiBold, color: Colors.primaryContainer,
+    letterSpacing: 2, marginBottom: Spacing.md,
+  },
+  reminderTimePicker: {
+    flexDirection: 'row' as const, alignItems: 'center' as const, gap: Spacing.xs,
+  },
+  reminderTimeBtn: {
+    backgroundColor: Colors.surfaceContainerHigh,
+    borderRadius: BorderRadius.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+    minWidth: 64,
+    alignItems: 'center' as const,
+  },
+  reminderTimeDigit: {
+    fontSize: FontSizes['2xl'], fontFamily: Fonts.headlineExtraBold, color: Colors.onSurface,
+  },
+  reminderTimeColon: {
+    fontSize: FontSizes['2xl'], fontFamily: Fonts.headlineExtraBold, color: Colors.zinc500,
+  },
+  reminderTimeAmPm: {
+    fontSize: FontSizes.md, fontFamily: Fonts.headlineBold, color: Colors.primaryContainer,
+    marginLeft: Spacing.sm,
+  },
+  reminderTimeHint: {
+    fontSize: FontSizes.xs, fontFamily: Fonts.body, color: Colors.zinc600, marginTop: Spacing.sm,
   },
 });

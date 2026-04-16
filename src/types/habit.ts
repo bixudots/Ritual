@@ -30,6 +30,7 @@ export interface Habit {
   trackingEnabled: boolean;
   trackingUnit?: string;
   trackingGoal?: number;
+  reminderTime: string | null; // "HH:mm" (24h) or null if no reminder
   createdAt: string;
   updatedAt: string;
 }

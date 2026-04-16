@@ -45,6 +45,7 @@ import ProofSubmissionModal from '../../src/components/ProofSubmissionModal';
 import ProofButton from '../../src/components/ProofButton';
 import HeaderAvatar from '../../src/components/HeaderAvatar';
 import AddHabitSheet from '../../src/components/AddHabitSheet';
+import { checkXPLevelNotification } from '../../src/lib/notifications';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -364,6 +365,19 @@ function HabitCard({ habit, index, selectedDate, onProofPress, onProofRequired, 
                   <Text style={styles.streakBadgeText}>{streakLabel}</Text>
                 </View>
               )}
+              {habit.reminderTime && !isCompleted && (
+                <View style={styles.reminderBadge}>
+                  <Ionicons name="notifications" size={9} color={Colors.zinc500} />
+                  <Text style={styles.reminderBadgeText}>
+                    {(() => {
+                      const [h, m] = habit.reminderTime!.split(':').map(Number);
+                      const ampm = h < 12 ? 'AM' : 'PM';
+                      const h12 = h % 12 || 12;
+                      return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+                    })()}
+                  </Text>
+                </View>
+              )}
             </View>
 
             <View style={styles.cardSubRow}>
@@ -617,6 +631,11 @@ export default function TodayScreen() {
     const load = async () => {
       await Promise.all([fetchHabits(), fetchLogs()]);
       await fetchProfileXP();
+
+      // Check if user is close to levelling up (max once/week notification)
+      const xp = useHabitStore.getState().getTotalXP();
+      const progress = getLevelProgress(xp);
+      checkXPLevelNotification(xp, progress.nextLevelXP, progress.level + 1);
     };
     load();
     if (user) fetchCapsules(user.id);
@@ -1132,6 +1151,12 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
   },
   streakBadgeText: { fontFamily: Fonts.headlineExtraBold, fontSize: FontSizes.xs, color: Colors.primaryContainer },
+  reminderBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: 3,
+    backgroundColor: 'rgba(161,161,170,0.1)',
+    paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6,
+  },
+  reminderBadgeText: { fontFamily: Fonts.body, fontSize: 10, color: Colors.zinc500 },
   cardSubRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginTop: 4 },
   cardXpEarned: { fontFamily: Fonts.headlineExtraBold, fontSize: FontSizes.xs, color: Colors.secondary },
   cardXpAvailable: { fontFamily: Fonts.bodySemiBold, fontSize: FontSizes.xs, color: Colors.zinc500 },

@@ -10,6 +10,8 @@ import {
 } from '../lib/capsule-service';
 import { supabase } from '../lib/supabase';
 import { useHabitStore } from './habit-store';
+import { scheduleCapsuleNotification, cancelCapsuleNotification } from '../lib/notifications';
+import { getCapsuleUnlockDate } from '../types/capsule';
 
 // ── Capsule XP rewards ──
 // Kept as constants so the UI and store stay in lock-step.
@@ -108,6 +110,14 @@ export const useCapsuleStore = create<CapsuleState>((set, get) => ({
     const isFirstEver = priorCount === 0;
 
     set((state) => ({ capsules: [capsule, ...state.capsules] }));
+
+    // Schedule delivery notification
+    try {
+      const unlockDate = getCapsuleUnlockDate(capsule);
+      await scheduleCapsuleNotification(capsule.id, capsule.title, unlockDate);
+    } catch (err) {
+      console.warn('capsule notification error:', err);
+    }
 
     // ── XP rewards ──
     const baseXP = CAPSULE_XP.LOCK_BASE;

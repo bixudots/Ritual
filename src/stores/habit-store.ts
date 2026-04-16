@@ -44,6 +44,7 @@ function mapDbHabit(row: any): Habit {
     trackingEnabled: row.tracking_enabled ?? false,
     trackingUnit: row.tracking_unit ?? undefined,
     trackingGoal: row.tracking_goal ?? undefined,
+    reminderTime: row.reminder_time ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -667,6 +668,9 @@ export const useHabitStore = create<HabitState>((set, get) => ({
     if (habitData.trackingUnit !== undefined) insertData.tracking_unit = habitData.trackingUnit;
     if (habitData.trackingGoal !== undefined) insertData.tracking_goal = habitData.trackingGoal;
 
+    // Reminder
+    if (habitData.reminderTime !== undefined) insertData.reminder_time = habitData.reminderTime;
+
     const { data, error } = await supabase
       .from('habits')
       .insert(insertData)
@@ -727,6 +731,7 @@ export const useHabitStore = create<HabitState>((set, get) => ({
     if (updates.trackingEnabled !== undefined) dbUpdates.tracking_enabled = updates.trackingEnabled;
     if (updates.trackingUnit !== undefined) dbUpdates.tracking_unit = updates.trackingUnit;
     if (updates.trackingGoal !== undefined) dbUpdates.tracking_goal = updates.trackingGoal;
+    if (updates.reminderTime !== undefined) dbUpdates.reminder_time = updates.reminderTime;
 
     await supabase.from('habits').update(dbUpdates).eq('id', id);
   },

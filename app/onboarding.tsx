@@ -146,6 +146,7 @@ export default function OnboardingScreen() {
           trackingEnabled: p.trackingEnabled ?? false,
           trackingUnit: p.trackingUnit,
           trackingGoal: p.trackingGoal,
+          reminderTime: null,
         });
       }
 

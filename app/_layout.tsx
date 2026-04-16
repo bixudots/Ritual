@@ -12,6 +12,7 @@ import {
   getWelcomeSeen,
   subscribeWelcomeSeen,
 } from '../src/lib/welcome-flag';
+import { initNotifications } from '../src/lib/notifications';
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const { session, isInitialized, initialize, isLocked } = useAuthStore();
@@ -21,6 +22,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     initialize();
+    initNotifications();
   }, []);
 
   useEffect(() => {
