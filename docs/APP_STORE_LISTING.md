@@ -78,7 +78,7 @@ Alternates to A/B test after launch:
 
 ## Support & marketing URLs
 
-- **Support URL**: `mailto:ctsubaz@gmail.com`
+- **Support URL**: `mailto:contactsubaz@gmail.com`
 - **Marketing URL**: `https://bixudots.github.io/Ritual/`
 - **Privacy policy URL**: `https://bixudots.github.io/Ritual/privacy`
 
